@@ -9,27 +9,42 @@ namespace ClientApi.Controllers
     [ApiController]
     public class HomeController : ControllerBase
     {
+        private readonly ILogger<HomeController> _logger;
 
-        // GET: api/<HomeController>
+        public HomeController(ILogger<HomeController> logger)
+        {
+            _logger = logger;
+        }
+
+        // GET: <HomeController>
         [HttpGet]
         public async Task<string?> GetAsync()
         {
             HttpClient _httpClient = new HttpClient
             {
                 BaseAddress = new Uri("https://localhost:7219"),
-                Timeout = new TimeSpan(0, 0, 1)
+                Timeout = new TimeSpan(0, 0, 10)
             };
             _httpClient.DefaultRequestHeaders.Clear();
 
             var cancellationTokenSource = new CancellationTokenSource();
             cancellationTokenSource.CancelAfter(2000);
 
-            using (var response = await _httpClient.GetAsync("api/Service/companies", cancellationTokenSource.Token))
+            try
             {
-                response.EnsureSuccessStatusCode();
-                var company = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
-                return company;
+                using (var response = await _httpClient.GetAsync("api/Service/companies", cancellationTokenSource.Token))
+                {
+                    response.EnsureSuccessStatusCode();
+                    var company = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                    return company;
+                }
             }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Catch {type}", ex.GetType().Name);
+            }
+
+            return "NoContent";
         }
     }
 }

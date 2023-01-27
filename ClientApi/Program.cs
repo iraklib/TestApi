@@ -7,6 +7,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.WebHost.ConfigureLogging((hostingContext, builder) =>
+{
+    var configuration = hostingContext.Configuration.GetSection("Logging");
+    builder.AddFile(configuration);
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

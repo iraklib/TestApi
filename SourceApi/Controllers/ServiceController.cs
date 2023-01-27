@@ -18,16 +18,29 @@ namespace SourceApi.Controllers
         [HttpGet("{companyName}", Name = "GetCompanyName")]
         public ActionResult<string> GetCompanyName(string companyName, CancellationToken token)
         {
-            var counter = 1;
-            for (int i = 0; i < 5; i++)
+            try
             {
-                Thread.Sleep(1000);
-                _logger.LogInformation("Iteration:{counter}", counter);
-                token.ThrowIfCancellationRequested();
-                counter++;
+                for (int i = 0; i < 5; i++)
+                {
+                    Thread.Sleep(1000);
+
+                    _logger.LogInformation("Iteration:{i}", i);
+
+                    token.ThrowIfCancellationRequested();
+                }
+            }
+            catch (OperationCanceledException ex)
+            {
+                _logger.LogError(ex, "Task Cancelling {companyName}", companyName);
+                //throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Final Catch {companyName}", companyName);
+                throw;
             }
             
-            return $"{companyName}:{counter}";
+            return $"{companyName}:{DateTime.Now.ToShortTimeString()}";
         }
     }
 }
