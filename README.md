@@ -7,6 +7,6 @@
 ###     BaseAddress = new Uri("https://localhost:7219"),
 ###     Timeout = new TimeSpan(0, 0, 10)
 ### };
-### ან შესაძლებელია CancellationToken-ს დაუყენედეს Timeout მნიშვნელობა:
+### ან შესაძლებელია CancellationToken-ს დაუყენედეს CancelAfter მნიშვნელობა:
 ### var cancellationTokenSource = new CancellationTokenSource();
 ### cancellationTokenSource.CancelAfter(2000);
