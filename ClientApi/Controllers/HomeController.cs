@@ -17,25 +17,25 @@ namespace ClientApi.Controllers
         }
 
         // GET: <HomeController>
-        [HttpGet]
-        public async Task<string?> GetAsync()
+        [HttpGet("GetCompanyWithTimeout")]
+        public async Task<ActionResult<string?>> GetCompanyWithTimeout()
         {
             HttpClient _httpClient = new HttpClient
             {
                 BaseAddress = new Uri("https://localhost:7219"),
-                Timeout = new TimeSpan(0, 0, 10)
+                Timeout = new TimeSpan(0, 0, 3)
             };
             _httpClient.DefaultRequestHeaders.Clear();
 
             var cancellationTokenSource = new CancellationTokenSource();
-            cancellationTokenSource.CancelAfter(2000);
+           // cancellationTokenSource.CancelAfter(2000);
 
             try
             {
                 using (var response = await _httpClient.GetAsync("api/Service/companies", cancellationTokenSource.Token))
                 {
                     response.EnsureSuccessStatusCode();
-                    var company = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+                    var company = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                     return company;
                 }
             }
